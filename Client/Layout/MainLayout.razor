@@ -1,12 +1,20 @@
 ﻿@inherits LayoutComponentBase
-<div class="page">
+<div class="flex">
     <div class="sidebar">
         <NavMenu/>
     </div>
 
-    <main>
-        <div class="top-row px-4">
-            <a href="https://learn.microsoft.com/aspnet/core/" target="_blank">About</a>
+    <main class="flex-grow">
+        <div class="border-b p-4">
+            <AuthorizeView>
+                <NotAuthorized>
+                    <a href="identity/account/login" class="btn btn-none">Login</a>
+                    <a href="identity/account/register" class="btn btn-none">Register</a>
+                </NotAuthorized>
+                <Authorized>
+                    <a class="btn btn-none" @onclick="LogoutClicked">Logout</a>
+                </Authorized>
+            </AuthorizeView>
         </div>
 
         <article class="content px-4">
@@ -14,3 +22,15 @@
         </article>
     </main>
 </div>
+
+@code{
+
+    async Task LogoutClicked()
+    {
+        var logoutModel = new UserSession();
+        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(logoutModel);
+        NavManager.NavigateTo("/", forceLoad: true);
+    }
+
+}
