@@ -87,7 +87,7 @@ public class UserAccountRepository(IOptions<JwtSection> config, AppDbContext dbC
         var getUserRole = await FindRole(applicationUser.Id);
         if (getUserRole is null) return new LoginResponse(false, "User role not found");
 
-        var getRoleName = await FindRoleName(getUserRole.Id);
+        var getRoleName = await FindRoleName(getUserRole.RoleId);
         if (getUserRole is null) return new LoginResponse(false, "User role not found");
 
         string jwtToken = GenerateToken(applicationUser, getRoleName!.Name!);
