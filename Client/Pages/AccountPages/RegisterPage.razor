@@ -1,0 +1,71 @@
+@page "/identity/account/register"
+
+<PageTitle>Register</PageTitle>
+
+<div class="container grid place-content-center place-items-center w-full h-full">
+    <div class="w-96">
+        <EditForm Enhance Model="User" OnValidSubmit="HandleRegistration" class="border rounded-lg shadow-lg">
+            <DataAnnotationsValidator/>
+            <ValidationSummary/>
+            <div class="px-4 py-2 bg-gray-200 rounded-t">Fill in this form to register</div>
+            <div class="p-4 rounded-b">
+                <div class="grid gap-4">
+                    <div>
+                        <label for="UserEmail" class="block text-sm font-medium text-gray-700"> Fullname </label>
+                        <InputText
+                            type="text"
+                            id="UserFullName"
+                            @bind-Value="User.Fullname"
+                            class="mt-1 p-3 w-full rounded-md border border-gray-600 sm:text-sm">
+                        </InputText>
+                    </div>
+                    <div>
+                        <label for="UserEmail" class="block text-sm font-medium text-gray-700"> Email </label>
+                        <InputText
+                            type="email"
+                            id="UserEmail"
+                            @bind-Value="User.Email"
+                            class="mt-1 p-3 w-full rounded-md border border-gray-600 sm:text-sm">
+                        </InputText>
+                    </div>
+                    <div>
+                        <label for="UserEmail" class="block text-sm font-medium text-gray-700"> Password </label>
+                        <input
+                            type="password"
+                            id="UserPassword"
+                            @bind="User.Password"
+                            class="mt-1 p-3 w-full rounded-md border border-gray-600 sm:text-sm"/>
+                    </div>
+                    <div>
+                        <label for="UserEmail" class="block text-sm font-medium text-gray-700"> Confirm Password </label>
+                        <InputText
+                            type="password"
+                            id="UserConfirmPassword"
+                            @bind-Value="User.ConfirmPassword"
+                            class="mt-1 p-3 w-full rounded-md border border-gray-600 sm:text-sm">
+                        </InputText>
+                    </div>
+                    <button class="inline-block px-4 py-2 text-sm font-medium text-white bg-blue-500 hover:bg-blue-300 rounded-lg">Register</button>
+                </div>
+            </div>
+        </EditForm>
+    </div>
+</div>
+
+@code {
+    Register User = new();
+    async Task HandleRegistration()
+    {
+        var result = await AccountService.CreateAsync(User);
+        if (result.Flag)
+        {
+            User = new();
+        }
+        else
+        {
+            
+        }
+    }
+
+
+}
