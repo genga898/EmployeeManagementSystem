@@ -1,0 +1,70 @@
+@page "/identity/account/login"
+@layout AuthenticationLayout
+@inject IDialogService DialogService
+
+<PageTitle>Login</PageTitle>
+
+<div class="container grid place-content-center place-items-center w-full h-full">
+    <FluentCard Class="w-96" Style="background: var(--neutral-layer-2)">
+        <EditForm Enhance Model="_user" OnValidSubmit="HandleLogin">
+            <h2 class="font-bold text-sm underline underline-offset-2">Fill in this form to login</h2>
+            <div class="pt-4">
+                <div class="grid gap-4">
+                    <div>
+                        <FluentTextField @bind-Value="_user.Email" AriaLabel="email-address" Label="Email" TextFieldType="TextFieldType.Email" Required Class="w-full"></FluentTextField>
+                        <FluentValidationMessage For="@(() => _user.Email)"></FluentValidationMessage>
+                    </div>
+                    <div>
+                        <FluentTextField @bind-Value="_user.Password" AriaLabel="password" Label="Password" TextFieldType="TextFieldType.Password" Required Class="w-full"></FluentTextField>
+                        <FluentValidationMessage For="@(() => _user.Password)"></FluentValidationMessage>
+                    </div>
+                    
+                    <FluentButton Loading="ShowLoadingButton" Type="ButtonType.Submit" Appearance="Appearance.Accent">Login</FluentButton>
+                    
+                    <div class="text-sm">
+                        <p>Don't have an account? <NavLink href="identity/account/register" class="text-blue-500">Register here</NavLink></p>
+                    </div>
+                </div>
+            </div>
+        </EditForm>
+    </FluentCard>
+</div>
+
+@code {
+    public bool ShowLoadingButton { get; set; } = false;
+    Login _user = new();
+    async Task HandleLogin()
+    {
+        ShowLoadingButton = true;
+        var result = await AccountService.SignInAsync(_user);
+        if (result.Flag)
+        {
+            await DisplayDialog(result.Message, "Login Success", result.Flag);
+            var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+            await customAuthStateProvider.UpdateAuthenticationState(new UserSession()
+            {
+                Token = result.Token,
+                RefreshToken = result.RefreshToken
+            });
+            NavManager.NavigateTo("/", forceLoad: true);
+        }
+        else
+        {
+            await DisplayDialog(result.Message, "Alert", result.Flag);
+        }
+        ShowLoadingButton = false;
+    }
+
+    private async Task DisplayDialog(string content, string title, bool flag)
+    {
+        if (!flag)
+        {
+            await DialogService.ShowErrorAsync(content, title);    
+        }
+        else
+        {
+            await DialogService.ShowSuccessAsync(content, title);
+        }
+    }
+
+}

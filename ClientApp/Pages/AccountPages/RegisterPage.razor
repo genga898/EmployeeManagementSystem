@@ -1,0 +1,73 @@
+@page "/identity/account/register"
+@layout AuthenticationLayout
+@inject IDialogService DialogService
+
+<PageTitle>Register</PageTitle>
+
+<div class="container grid place-content-center place-items-center w-full h-full">
+    <div class="w-96">
+        <FluentCard Class="w-96" Style="background: var(--neutral-layer-2)">
+            <EditForm Enhance Model="_user" OnValidSubmit="HandleRegistration">
+                <DataAnnotationsValidator/>
+                <h3 class="font-bold text-sm underline underline-offset-2">Fill in this form to register</h3>
+                <div class="pt-4">
+                    <div class="grid gap-4">
+                        <div>
+                            <FluentTextField @bind-Value="_user.Fullname" AriaLabel="Full name" TextFieldType="TextFieldType.Text" Label="Fullname" Required Class="w-full"></FluentTextField>
+                            <FluentValidationMessage For="@(() => _user.Fullname)" ></FluentValidationMessage>
+                        </div>
+                        <div>
+                            <FluentTextField @bind-Value="_user.Email" AriaLabel="Email Address" TextFieldType="TextFieldType.Email" Label="Email" Required Class="w-full"></FluentTextField>
+                            <FluentValidationMessage For="@(() => _user.Email)" ></FluentValidationMessage>
+                        </div>
+                        <div>
+                            <FluentTextField @bind-Value="_user.Password" AriaLabel="Password" TextFieldType="TextFieldType.Password" Label="Password" Required Class="w-full"></FluentTextField>
+                            <FluentValidationMessage For="@(() => _user.Password)" ></FluentValidationMessage>
+                        </div>
+                        <div>
+                            <FluentTextField @bind-Value="_user.ConfirmPassword" AriaLabel="Confirm Password" TextFieldType="TextFieldType.Password" Label="Confirm Password" Required Class="w-full"></FluentTextField>
+                            <FluentValidationMessage For="@(() => _user.ConfirmPassword)" ></FluentValidationMessage>
+                        </div>
+                        <FluentButton Loading="ShowLoadingButton" Type="ButtonType.Submit" Appearance="Appearance.Accent">Register</FluentButton>
+                        
+                        <div class="text-sm">
+                            <p>Already have an account? <NavLink href="identity/account/login" class="text-blue-500">Login here</NavLink></p>
+                        </div>
+                    </div>
+                </div>
+            </EditForm>
+        </FluentCard>
+    </div>
+</div>
+
+@code {
+    public bool ShowLoadingButton { get; set; } = false;
+    Register _user = new();
+    async Task HandleRegistration()
+    {
+        ShowLoadingButton = true;
+        var result = await AccountService.CreateAsync(_user);
+        if (result.Flag)
+        {
+            _user = new();
+            await DisplayDialog(result.Message, "Registration Successful", result.Flag);
+        }
+        else
+        {
+            await DisplayDialog(result.Message, "Alert", result.Flag);
+        }
+        ShowLoadingButton = false;
+    }
+    
+    private async Task DisplayDialog(string content, string title, bool flag)
+    {
+        if (!flag)
+        {
+            await DialogService.ShowErrorAsync(content, title);    
+        }
+        else
+        {
+            await DialogService.ShowSuccessAsync(content, title);
+        }
+    }
+}

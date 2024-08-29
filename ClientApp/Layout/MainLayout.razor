@@ -1,0 +1,57 @@
+﻿@inherits LayoutComponentBase
+
+<FluentLayout Class="h-[100vh]">
+    <FluentHeader>
+        EMS
+        <FluentSpacer></FluentSpacer>
+        <AuthorizeView>
+            <Authorized>
+                <div>
+                    <FluentButton Id="myLogoutButton" Appearance="Appearance.Outline" OnClick="LogoutClicked">
+                        <FluentIcon Icon="Icons.Regular.Size20.ArrowExit" aria-labelledby="logout-button" Color="@Color.Fill" />
+                    </FluentButton>
+                    <FluentTooltip Anchor="myLogoutButton" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Start>Log out</FluentTooltip>
+                </div>
+            </Authorized>
+            <NotAuthorized>
+                <div>
+                    <FluentButton Appearance="Appearance.Outline" OnClick="HandleLoginClicked">Login/Register</FluentButton>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+    </FluentHeader>
+    <FluentStack Class="h-full" Style="background: var(--neutral-layer-2)" Orientation="Orientation.Horizontal" Width="100%">
+        <NavMenu/>
+        <FluentBodyContent Class="flex h-full">
+            <ErrorBoundary>
+                <ChildContent>
+                    <div class="w-full p-4">
+                        @Body
+                    </div>
+                </ChildContent>
+                <ErrorContent Context="ex">
+                    <div class="blazor-error-boundary">@ex.Message</div>
+                </ErrorContent>
+            </ErrorBoundary>
+        </FluentBodyContent>
+    </FluentStack>
+</FluentLayout>
+
+<FluentTooltipProvider />
+<FluentDialogProvider/>
+
+@code
+{
+    async Task LogoutClicked()
+    {
+        var logoutModel = new UserSession();
+        var customAuthStateProvider = (CustomAuthStateProvider)AuthStateProvider;
+        await customAuthStateProvider.UpdateAuthenticationState(logoutModel);
+        NavManager.NavigateTo("/", forceLoad: true);
+    }
+
+    void HandleLoginClicked()
+    {
+        NavManager.NavigateTo("/identity/account/login");
+    }
+}
