@@ -1,16 +1,33 @@
-﻿@inject IDialogService DialogService
+﻿@using ClientApp.ApplicationState
+@inject IDialogService DialogService
+@inject DepartmentState DepartmentState
 
 <div class="navmenu h-[calc(100vh-50px)]">
-    <nav class="h-full border-r-2 p-2" aria-labelledby="main-menu">
-        <FluentNavMenu Width="250">
-            <FluentNavLink Icon="@(new Icons.Regular.Size24.Home())" Href="/" Match="NavLinkMatch.All">Home</FluentNavLink>
-            <FluentNavLink Icon="@(new Icons.Regular.Size16.AddSquare())" Href="/counter">Count</FluentNavLink>
-            <FluentNavLink Icon="@(new Icons.Regular.Size20.WeatherRainShowersDay())" Href="/weather">Weather</FluentNavLink>
-        </FluentNavMenu>
-    </nav>
+    <AuthorizeView>
+        <Authorized>
+            <nav class="h-full border-r-2 p-2" aria-labelledby="main-menu">
+                <FluentNavMenu Width="250">
+                    <FluentNavLink Icon="@(new Icons.Regular.Size24.Home())" Href="/home/dashboard" Match="NavLinkMatch.All">Home</FluentNavLink>
+                    <FluentNavLink Icon="@(new Icons.Regular.Size16.AddSquare())" Href="/counter">Count</FluentNavLink>
+                    <FluentNavLink Icon="@(new Icons.Regular.Size20.WeatherRainShowersDay())" Href="/weather">Weather</FluentNavLink>
+                    <FluentNavGroup Title="Administrator" Icon="@(new Icons.Regular.Size20.Person())">
+                        <FluentNavLink Icon="@(new Icons.Regular.Size20.People())">User</FluentNavLink>
+                    </FluentNavGroup>
+                    <FluentNavGroup Title="Department" Icon="@(new Icons.Regular.Size20.BuildingMultiple())">
+                        <FluentNavLink Icon="@(new Icons.Regular.Size20.FolderPeople())" OnClick="GeneralDepartmentClicked">General</FluentNavLink>
+                        <FluentNavLink Icon="@(new Icons.Regular.Size20.BuildingMultiple())">Department</FluentNavLink>
+                        <FluentNavLink Icon="@(new Icons.Regular.Size20.Branch())">Branch</FluentNavLink>
+                    </FluentNavGroup>
+                </FluentNavMenu>
+            </nav>
+        </Authorized>
+    </AuthorizeView>
 </div>
 
 @code 
 {
-    
+    void GeneralDepartmentClicked()
+    {
+        DepartmentState.GeneralDepartmentClicked();
+    }
 }
