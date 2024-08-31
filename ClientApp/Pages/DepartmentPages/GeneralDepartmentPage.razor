@@ -1,0 +1,62 @@
+@using ClientApp.ApplicationState
+@implements IDisposable
+@inject DepartmentState departmentState
+@inject IDialogService DialogService
+
+@if (departmentState.ShowGeneralDepartment)
+{
+    <FluentCard Class="mt-4">
+        <div class="flex justify-between p-2 items-end">
+            <FluentLabel Typo="Typography.PaneHeader">
+                General Department
+            </FluentLabel>
+            <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Class="w-fit" OnClick="OpenAsync" Appearance="Appearance.Accent">Add Department</FluentButton>
+        </div>
+        <div class="p-2 grid gap-2 border-2 rounded">
+            <FluentDataGrid Id="departmentgrid" Items="departments" GridTemplateColumns="1fr 1fr 1fr 2fr" Virtualize="true" >
+                <PropertyColumn Title="#" Property="@(p => p.Id)" Sortable="true" Align="Align.Start"/>
+                <PropertyColumn Title="First" Property="@(p => p.FirstName)" Sortable="true" Align="Align.Start"/>
+                <PropertyColumn Title="Last" Property="@(p => p.LastName)" Sortable="true" Align="Align.Start"/>
+                <PropertyColumn Title="Handle" Property="@(p => p.Handle)" Sortable="true" Align="Align.Start"/>
+            </FluentDataGrid>
+        </div>
+    </FluentCard>
+}
+
+@code
+{
+    record Departments(int Id, string FirstName, string LastName, string Handle);
+
+    IQueryable<Departments> departments = new[]
+    {
+        new Departments(1, "James", "Vowles", "JW"),
+        new Departments(2, "James", "Vowles", "JW"),
+        new Departments(3, "James", "Vowles", "JW"),
+        new Departments(4, "James", "Vowles", "JW"),
+        new Departments(5, "James", "Vowles", "JW"),
+        new Departments(6, "James", "Vowles", "JW"),
+        new Departments(7, "James", "Vowles", "JW") 
+    }.AsQueryable();
+
+    GeneralDepartmentDTO Department = new();
+    
+    protected override void OnInitialized()
+    {
+        departmentState.GeneralDepartmentAction += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        departmentState.GeneralDepartmentAction -= StateHasChanged;
+    }
+
+    private async Task OpenAsync()
+    {
+        await DialogService.ShowDialogAsync<GeneralDepartmentDialog>(new DialogParameters()
+        {
+            DialogBodyStyle = "background: var(--neutral-layer-2);",
+            PreventDismissOnOverlayClick = true,
+            PreventScroll = true,
+        });
+    }
+}
