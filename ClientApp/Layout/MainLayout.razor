@@ -6,12 +6,28 @@
         <FluentSpacer></FluentSpacer>
         <AuthorizeView>
             <Authorized>
-                <div>
-                    <FluentButton Id="myLogoutButton" Appearance="Appearance.Outline" OnClick="LogoutClicked">
-                        <FluentIcon Icon="Icons.Regular.Size20.ArrowExit" aria-labelledby="logout-button" Color="@Color.Fill" />
-                    </FluentButton>
-                    <FluentTooltip Anchor="myLogoutButton" HideTooltipOnCursorLeave="true" Position=TooltipPosition.Start>Log out</FluentTooltip>
-                </div>
+                <FluentPersona 
+                    Id="persona-button"
+                    Initials="EG"
+                    ImageSize="40px"
+                    OnClick="@(()=> _open = !_open)"
+                >
+                </FluentPersona>
+                <FluentMenu Anchor="persona-button" @bind-Open="_open" Class="w-40">
+                    <FluentMenuItem>
+                        <span slot="start">
+                            <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Color="Color.Neutral"></FluentIcon>
+                        </span>
+                        Profile
+                    </FluentMenuItem>
+                    <FluentDivider></FluentDivider>
+                    <FluentMenuItem OnClick="LogoutClicked" Style="background: var(--warning);">
+                        <span slot="start">
+                            <FluentIcon Icon="Icons.Regular.Size20.ArrowExit" aria-labelledby="logout-button" Color="@Color.Neutral"/>
+                        </span>
+                        Logout
+                    </FluentMenuItem>
+                </FluentMenu>
             </Authorized>
             <NotAuthorized>
                 <div>
@@ -42,6 +58,9 @@
 
 @code
 {
+    //Check if menu is open
+    private bool _open = false;
+    
     async Task LogoutClicked()
     {
         var logoutModel = new UserSession();
