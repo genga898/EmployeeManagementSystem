@@ -1,0 +1,13 @@
+﻿services:
+  employees.database:
+    image: postgres
+    container_name: employees.database
+    restart: always
+    environment:
+      - POSTGRES_DB=Employee
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./.containers/employees-db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
