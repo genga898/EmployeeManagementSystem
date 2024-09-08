@@ -6,6 +6,7 @@ using ServerLibrary.Helpers;
 using ServerLibrary.Repositories.Contracts;
 using ServerLibrary.Repositories.Implementations;
 using System.Text;
+using Server.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,7 +21,7 @@ var jwtSection = builder.Configuration.GetSection(nameof(JwtSection)).Get<JwtSec
 
 builder.Services.AddDbContext<AppDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection") ??
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection") ??
                       throw new InvalidOperationException("Sorry your connections string cannot be found"));
 });
 builder.Services.AddAuthentication(options =>
@@ -58,6 +59,7 @@ if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
+    app.ApplyMigrations();
 }
 
 app.UseCors("AllowBlazorWasm");
