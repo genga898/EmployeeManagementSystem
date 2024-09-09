@@ -1,3 +1,4 @@
+@using BaseLibrary.Entities
 @implements IDialogContentComponent
 @inject IDialogService DialogService
 
@@ -26,7 +27,7 @@
 
 @code
 {
-    [Parameter] public GeneralDepartmentDTO Department { get; set; } = new();
+    [Parameter] public GeneralDepartment Department { get; set; } = new();
 
     [CascadingParameter] public FluentDialog Dialog { get; set; } = default;
 
