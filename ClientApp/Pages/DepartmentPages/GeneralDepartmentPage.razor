@@ -1,23 +1,24 @@
+@using BaseLibrary.Entities
 @using ClientApp.ApplicationState
 @implements IDisposable
-@inject DepartmentState departmentState
+@inject DepartmentState DepartmentState
 @inject IDialogService DialogService
 
-@if (departmentState.ShowGeneralDepartment)
+@if (DepartmentState.ShowGeneralDepartment)
 {
-    <FluentCard Class="mt-4">
-        <div class="flex justify-between p-2 items-end">
+    <FluentCard Class="mt-4 grid gap-4">
+        <div class="flex justify-between p-2 items-end rounded bg-[--neutral-layer-2]">
             <FluentLabel Typo="Typography.PaneHeader">
                 General Department
             </FluentLabel>
             <FluentButton IconStart="@(new Icons.Regular.Size20.AddCircle())" Class="w-fit" OnClick="OpenAsync" Appearance="Appearance.Accent">Add Department</FluentButton>
         </div>
-        <div class="p-2 grid gap-2 border-2 rounded">
-            <FluentDataGrid Id="departmentgrid" Items="departments" GridTemplateColumns="1fr 1fr 1fr 2fr" Virtualize="true" >
-                <PropertyColumn Title="#" Property="@(p => p.Id)" Sortable="true" Align="Align.Start"/>
-                <PropertyColumn Title="First" Property="@(p => p.FirstName)" Sortable="true" Align="Align.Start"/>
-                <PropertyColumn Title="Last" Property="@(p => p.LastName)" Sortable="true" Align="Align.Start"/>
-                <PropertyColumn Title="Handle" Property="@(p => p.Handle)" Sortable="true" Align="Align.Start"/>
+        <div>
+            <FluentDataGrid Id="departmentgrid" Items="departments" GridTemplateColumns="1fr 1fr 1fr 2fr" Virtualize="true">
+                <PropertyColumn Title="#" Property="@(p => p.Id)" Sortable="true" Align="Align.Start" Style="border-bottom: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-divider-rest);"/>
+                <PropertyColumn Title="First" Property="@(p => p.FirstName)" Sortable="true" Align="Align.Start" Style="border-bottom: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-divider-rest);"/>
+                <PropertyColumn Title="Last" Property="@(p => p.LastName)" Sortable="true" Align="Align.Start" Style="border-bottom: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-divider-rest);"/>
+                <PropertyColumn Title="Handle" Property="@(p => p.Handle)" Sortable="true" Align="Align.Start" Style="border-bottom: calc(var(--stroke-width)* 1px) solid var(--neutral-stroke-divider-rest);"/>
             </FluentDataGrid>
         </div>
     </FluentCard>
@@ -38,16 +39,16 @@
         new Departments(7, "James", "Vowles", "JW") 
     }.AsQueryable();
 
-    GeneralDepartmentDTO Department = new();
+    GeneralDepartment _department = new();
     
     protected override void OnInitialized()
     {
-        departmentState.GeneralDepartmentAction += StateHasChanged;
+        DepartmentState.GeneralDepartmentAction += StateHasChanged;
     }
 
     public void Dispose()
     {
-        departmentState.GeneralDepartmentAction -= StateHasChanged;
+        DepartmentState.GeneralDepartmentAction -= StateHasChanged;
     }
 
     private async Task OpenAsync()
