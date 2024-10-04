@@ -6,6 +6,7 @@ using ServerLibrary.Helpers;
 using ServerLibrary.Repositories.Contracts;
 using ServerLibrary.Repositories.Implementations;
 using System.Text;
+using Scalar.AspNetCore;
 using Server.Extension;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -57,8 +58,16 @@ var app = builder.Build();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
-    app.UseSwagger();
-    app.UseSwaggerUI();
+    app.UseSwagger(options =>
+    {
+        options.RouteTemplate = "openapi/{documentName}.json";
+    });
+    app.MapScalarApiReference(options =>
+    {
+        options
+            .WithForceThemeMode(ThemeMode.Dark)
+            .WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
+    } );
     app.ApplyMigrations();
 }
 
