@@ -6,28 +6,15 @@
         <FluentSpacer></FluentSpacer>
         <AuthorizeView>
             <Authorized>
-                <FluentPersona 
-                    Id="persona-button"
+                <FluentProfileMenu 
                     Initials="EG"
+                    HeaderLabel="Profile"
                     ImageSize="40px"
-                    OnClick="@(()=> _open = !_open)"
+                    FullName="@context.User.Identity?.Name"
+                    PopoverStyle="margin-top:10px; min-width: 400px; border-radius: 5px;"
+                    OnHeaderButtonClick="LogoutClicked"
                 >
-                </FluentPersona>
-                <FluentMenu Anchor="persona-button" @bind-Open="_open" Class="w-40">
-                    <FluentMenuItem>
-                        <span slot="start">
-                            <FluentIcon Value="@(new Icons.Regular.Size20.Person())" Color="Color.Neutral"></FluentIcon>
-                        </span>
-                        Profile
-                    </FluentMenuItem>
-                    <FluentDivider></FluentDivider>
-                    <FluentMenuItem OnClick="LogoutClicked" Style="background: var(--warning);">
-                        <span slot="start">
-                            <FluentIcon Icon="Icons.Regular.Size20.ArrowExit" aria-labelledby="logout-button" Color="@Color.Neutral"/>
-                        </span>
-                        Logout
-                    </FluentMenuItem>
-                </FluentMenu>
+                </FluentProfileMenu>
             </Authorized>
             <NotAuthorized>
                 <div>
